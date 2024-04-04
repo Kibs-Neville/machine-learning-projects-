@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Price Prediction</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>NCBA Bank Stock Price Prediction</h1>
+        <form id="prediction-form">
+            <label for="opening_price">Opening Price (Kshs):</label>
+            <input type="number" id="opening_price" name="opening_price" step="0.0001" required><br>
+            
+            <label for="highest_price">Highest Price (Kshs):</label>
+            <input type="number" id="highest_price" name="highest_price" step="0.0001" required><br>
+            
+            <label for="lowest_price">Lowest Price (Kshs):</label>
+            <input type="number" id="lowest_price" name="lowest_price" step="0.0001" required><br>
+            <button type="submit">Predict</button>
+        </form>
+        
+        <div id="result"></div>
+    </div>
+    
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var form = new FormData(this);
+
+            fetch('/predict', {
+                method: 'POST',
+                body: JSON.stringify(Object.fromEntries(form.entries())),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerHTML = 'Predicted Closing Price: ' + data.closing_price.toFixed(2) + ' Kshs';
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
